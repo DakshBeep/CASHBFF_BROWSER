@@ -1,5 +1,5 @@
 // Wage Lens - Content Script
-// Runs on Amazon pages, replaces prices with hours of work, logs raw events
+// Runs on all pages, replaces prices with hours of work on shopping sites, logs raw events
 
 (async function() {
   // Get settings
@@ -18,7 +18,7 @@
     await chrome.storage.sync.set({ userId: settings.userId });
   }
 
-  // Price selectors for Amazon
+  // Price selectors for Amazon (expanded)
   const priceSelectors = [
     '.a-price .a-offscreen',
     '.a-price-whole',
@@ -26,11 +26,26 @@
     '#priceblock_dealprice',
     '.a-color-price',
     '[data-a-color="price"] .a-offscreen',
-    '.apexPriceToPay .a-offscreen'
+    '.apexPriceToPay .a-offscreen',
+    // Format switcher (Kindle, Hardcover, Paperback buttons)
+    '#tmmSwatches .a-button-text .a-size-base',
+    '#tmmSwatches .slot-price span',
+    '.swatchElement .a-color-base',
+    // "Other Used, New, Collectible" link
+    '#usedBuySection .a-color-price',
+    '.olp-from-new-price',
+    '.olp-used-good-price',
+    '#mediaOlp .a-color-price',
+    // More general price patterns
+    '.a-text-price .a-offscreen',
+    '.a-text-price',
+    'span.a-price span.a-offscreen'
   ];
 
   function parsePrice(text) {
     if (!text) return null;
+    // Skip if it's not a dollar amount (like "1 credit")
+    if (!text.includes('$')) return null;
     const match = text.replace(/[^0-9.,]/g, '').match(/[\d,]+\.?\d*/);
     if (!match) return null;
     return parseFloat(match[0].replace(/,/g, ''));
@@ -68,14 +83,10 @@
 
   // Try to extract ASIN from URL or page
   function scrapeASIN() {
-    // From URL: /dp/ASIN or /gp/product/ASIN
     const urlMatch = window.location.pathname.match(/\/(dp|gp\/product)\/([A-Z0-9]{10})/);
     if (urlMatch) return urlMatch[2];
-    
-    // From page
     const asinEl = document.querySelector('[data-asin]');
     if (asinEl) return asinEl.dataset.asin;
-    
     return null;
   }
 
@@ -111,7 +122,7 @@
         },
         body: JSON.stringify(event)
       });
-      
+
       if (!res.ok) {
         console.error('[Wage Lens] Failed to log:', res.status, await res.text());
       } else {
@@ -127,37 +138,41 @@
     priceSelectors.forEach(selector => {
       document.querySelectorAll(selector).forEach(el => {
         if (el.dataset.wageLensConverted) return;
-        
-        const originalPrice = el.textContent;
-        const price = parsePrice(originalPrice);
-        
+
+        const originalText = el.textContent;
+        const price = parsePrice(originalText);
+
         if (price && price > 0) {
           el.dataset.wageLensConverted = 'true';
-          el.dataset.originalPrice = originalPrice;
+          el.dataset.originalPrice = originalText;
           el.textContent = formatHours(price);
           el.classList.add('wage-lens-converted');
-          el.title = `Original: ${originalPrice}`;
+          el.title = `Original: ${originalText}`;
         }
       });
     });
   }
 
   // === Run ===
-  
+
   // Log this page view (raw data)
   logEvent();
 
-  // Convert visible prices
-  convertPrices();
+  // Only convert prices on shopping sites
+  const isShoppingSite = window.location.hostname.includes('amazon');
 
-  // Watch for dynamic content
-  const observer = new MutationObserver(() => {
+  if (isShoppingSite) {
     convertPrices();
-  });
 
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
+    // Watch for dynamic content
+    const observer = new MutationObserver(() => {
+      convertPrices();
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true
+    });
+  }
 
 })();
