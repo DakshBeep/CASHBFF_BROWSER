@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "description": "See prices in hours of your life",
   "permissions": ["storage", "activeTab"],
-  "host_permissions": ["https://*.amazon.com/*"],
+  "host_permissions": ["<all_urls>"],
   "content_scripts": [
     {
-      "matches": ["https://*.amazon.com/*"],
+      "matches": ["<all_urls>"],
       "js": ["content.js"],
       "css": ["styles.css"]
     }
