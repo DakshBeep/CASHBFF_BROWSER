@@ -1,0 +1,8 @@
+.wage-lens-converted {
+  color: #B12704 !important;
+  cursor: help;
+}
+
+.wage-lens-converted:hover::after {
+  content: " 💰";
+}
