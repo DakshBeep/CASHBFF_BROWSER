@@ -14,8 +14,32 @@
   const hostname = window.location.hostname;
   const domain = hostname.replace(/^www\./, '');
 
+  // Shopping sites we track (converted = we convert prices, others = potential expansion)
+  const convertedSites = ['amazon', 'sephora'];
+  const trackableSites = [
+    ...convertedSites,
+    'walmart', 'target', 'ebay', 'bestbuy', 'etsy',
+    'shein', 'nike', 'asos', 'zara', 'hm', 'uniqlo', 'gap',
+    'doordash', 'ubereats', 'grubhub', 'instacart',
+    'costco', 'macys', 'nordstrom', 'kohls', 'wayfair', 'ikea'
+  ];
+
   // Track prices found on this page for analytics
   const pricesFoundOnPage = [];
+
+  // Session tracking
+  const sessionStart = Date.now();
+  const path = window.location.pathname.toLowerCase();
+
+  // Detect page type from URL patterns
+  function getPageType() {
+    if (/\/(checkout|buy|payment|pay|order)/.test(path)) return 'checkout';
+    if (/\/(cart|basket|bag)/.test(path)) return 'cart';
+    if (/\/(dp|product|p|item|gp\/product)\//.test(path)) return 'product';
+    return 'browse';
+  }
+
+  const pageType = getPageType();
 
   // Price selectors for Amazon (expanded)
   const priceSelectors = [
@@ -290,29 +314,36 @@
 
   let analyticsFiredForPage = false;
 
-  function firePageAnalytics() {
+  async function firePageAnalytics() {
     if (analyticsFiredForPage || pricesFoundOnPage.length === 0) return;
     analyticsFiredForPage = true;
 
+    // Page type in funnel
+    await track('page_view', { domain, page_type: pageType });
+
+    // Exact prices seen (limited to first 20 to avoid huge payloads)
+    const pricesToSend = pricesFoundOnPage.slice(0, 20);
+    await track('prices_seen', { domain, prices: pricesToSend });
+
     // Tier 2: page converted
-    track('page_converted', { domain, price_count: pricesFoundOnPage.length });
+    await track('page_converted', { domain, price_count: pricesFoundOnPage.length });
 
     // Tier 3: price buckets (deduplicated)
     const bucketsSeen = new Set();
     const priceBucket = analytics.priceBucket || (() => null);
-    pricesFoundOnPage.forEach(p => {
+    for (const p of pricesFoundOnPage) {
       const bucket = priceBucket(p);
       if (bucket && !bucketsSeen.has(bucket)) {
         bucketsSeen.add(bucket);
-        track('price_bucket', { bucket });
+        await track('price_bucket', { bucket });
       }
-    });
+    }
 
     // Tier 3: time of day
     const timeOfDayPeriod = analytics.timeOfDayPeriod || (() => null);
     const period = timeOfDayPeriod();
     if (period) {
-      track('time_of_day', { period });
+      await track('time_of_day', { period });
     }
   }
 
@@ -325,12 +356,32 @@
     }, { once: true });
   }
 
+  // Track session end when user leaves
+  function trackSessionEnd() {
+    const duration = Math.round((Date.now() - sessionStart) / 1000);
+    track('session_end', { domain, duration_seconds: duration, page_type: pageType });
+    if (analytics.flush) analytics.flush();
+  }
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden' && isTrackableSite) {
+      trackSessionEnd();
+    }
+  });
+
   // === Run ===
 
-  // Only convert prices on shopping sites
-  const isShoppingSite = hostname.includes('amazon') || hostname.includes('sephora');
+  // Check if this is a site we convert prices on
+  const isConvertedSite = convertedSites.some(site => hostname.includes(site));
+  // Check if this is a shopping site we track (but may not convert yet)
+  const isTrackableSite = trackableSites.some(site => hostname.includes(site));
 
-  if (isShoppingSite) {
+  // Track shopping site visits (converted or not)
+  if (isTrackableSite) {
+    track('shopping_site_visit', { domain, converted: isConvertedSite });
+  }
+
+  if (isConvertedSite) {
     convertPrices();
 
     // Fire analytics after initial conversion

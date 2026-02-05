@@ -23,51 +23,95 @@
     .highlight { background: #f0f9f0; border-left: 3px solid #34C759; padding: 12px 16px; border-radius: 4px; margin: 16px 0; }
     a { color: #007AFF; }
     .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 13px; color: #888; }
+    code { background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+    .sites-list { columns: 2; font-size: 14px; }
   </style>
 </head>
 <body>
   <h1>CashBFF Privacy Policy</h1>
-  <p class="updated">Last updated: February 4, 2026</p>
+  <p class="updated">Last updated: February 5, 2026</p>
 
   <div class="highlight">
-    <strong>The short version:</strong> CashBFF collects minimal, anonymous usage data to improve the extension. We never collect your browsing history, personal information, or the actual prices you see. You can opt out at any time.
+    <strong>The short version:</strong> CashBFF collects anonymous usage data to improve the extension. We track shopping behavior on specific retail sites only. We never collect personal information, full URLs, or anything that could identify you. You can opt out at any time.
   </div>
 
   <h2>What CashBFF Does</h2>
   <p>CashBFF is a browser extension that converts dollar prices on shopping websites into "hours of work" based on an hourly wage you provide. All price conversion happens locally in your browser.</p>
 
   <h2>Data Stored on Your Device</h2>
-  <p>The following data is stored locally on your device using Chrome's built-in storage and never sent to any server:</p>
+  <p>The following data is stored locally on your device and never sent to any server:</p>
   <ul>
     <li>Your hourly wage setting</li>
     <li>Your analytics opt-in/opt-out preference</li>
     <li>A randomly generated anonymous identifier</li>
   </ul>
 
+  <h2>Shopping Sites We Track</h2>
+  <p>We only collect analytics data when you visit these specific retail websites:</p>
+  <ul class="sites-list">
+    <li>Amazon</li>
+    <li>Sephora</li>
+    <li>Walmart</li>
+    <li>Target</li>
+    <li>eBay</li>
+    <li>Best Buy</li>
+    <li>Etsy</li>
+    <li>Shein</li>
+    <li>Nike</li>
+    <li>Asos</li>
+    <li>Zara</li>
+    <li>H&M</li>
+    <li>Uniqlo</li>
+    <li>Gap</li>
+    <li>DoorDash</li>
+    <li>Uber Eats</li>
+    <li>Grubhub</li>
+    <li>Instacart</li>
+    <li>Costco</li>
+    <li>Macy's</li>
+    <li>Nordstrom</li>
+    <li>Kohl's</li>
+    <li>Wayfair</li>
+    <li>IKEA</li>
+  </ul>
+  <p><strong>We do not track any browsing outside this list.</strong></p>
+
   <h2>Anonymous Analytics Data We Collect</h2>
-  <p>If you have analytics enabled (the default), we collect the following anonymous data to understand how the extension is used and to improve it:</p>
+  <p>If you have analytics enabled (the default), we collect the following anonymous data when you visit the shopping sites listed above:</p>
   <ul>
     <li><strong>Install event</strong> — that the extension was installed, plus the version number</li>
     <li><strong>Daily active signal</strong> — that the extension was active on a given day</li>
     <li><strong>Wage set signal</strong> — that a wage was saved (not the value, just whether it was changed from the default)</li>
-    <li><strong>Page conversion counts</strong> — the website domain (e.g. "amazon.com") and how many prices were converted on that page</li>
-    <li><strong>Price range buckets</strong> — which general price ranges were seen (e.g. "$0-10", "$10-50", "$50-200", "$200+"), not exact prices</li>
-    <li><strong>Time-of-day period</strong> — the general time period of usage (morning, afternoon, evening, night), not the exact time</li>
-    <li><strong>Price hover</strong> — that a converted price was hovered over, plus the domain</li>
+    <li><strong>Shopping site visits</strong> — which retail site you visited (domain only) and whether prices were converted</li>
+    <li><strong>Page type</strong> — whether you're on a product page, cart, checkout, or browsing (detected from URL patterns, not the full URL)</li>
+    <li><strong>Prices seen</strong> — the dollar amounts displayed on the page (e.g. $29.99, $149.00) to understand shopping patterns</li>
+    <li><strong>Session duration</strong> — how long you spent on a shopping site before leaving</li>
+    <li><strong>Time-of-day period</strong> — the general time period of usage (morning, afternoon, evening, night)</li>
+    <li><strong>Price hover</strong> — that a converted price was hovered over</li>
   </ul>
 
   <h2>Data We Do NOT Collect</h2>
   <ul>
     <li>Your name, email, or any personal information</li>
     <li>Your hourly wage value</li>
-    <li>Exact prices of products you view</li>
-    <li>Product names, titles, or descriptions</li>
     <li>Full page URLs or browsing history</li>
+    <li>Product names, titles, or descriptions</li>
+    <li>Product IDs or ASINs</li>
+    <li>Search queries</li>
+    <li>Cart contents or purchase history</li>
+    <li>Any data from sites outside our tracked list</li>
     <li>Any data that could identify you personally</li>
   </ul>
 
+  <h2>Why We Collect This Data</h2>
+  <ul>
+    <li><strong>Shopping site visits</strong> — to understand which sites to add price conversion support for next</li>
+    <li><strong>Page type & session duration</strong> — to understand if CashBFF helps users make more mindful purchasing decisions</li>
+    <li><strong>Prices seen</strong> — to understand typical price ranges users encounter and improve the "hours of work" formatting</li>
+  </ul>
+
   <h2>Anonymous Identifier</h2>
-  <p>We generate a random UUID (universally unique identifier) stored locally on your device. This allows us to count unique users without knowing who they are. This ID:</p>
+  <p>We generate a random UUID (universally unique identifier) stored locally on your device. This allows us to count unique users and understand session patterns without knowing who they are. This ID:</p>
   <ul>
     <li>Is randomly generated and not linked to any account or personal data</li>
     <li>Cannot be used to identify you</li>
