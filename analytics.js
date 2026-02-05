@@ -1,8 +1,8 @@
 // CashBFF Anonymous Analytics
 // No PII, no URLs, no exact prices — just anonymous usage events
 
-const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // e.g. https://xxx.supabase.co
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://nsrofxehicljgifexjfd.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_I3WCB_2buOn9US2B7GiUtQ_tLRYWZQX';
 
 const FLUSH_INTERVAL = 30000; // 30 seconds
 const TABLE = 'anon_events';
