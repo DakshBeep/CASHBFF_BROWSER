@@ -1,85 +1,70 @@
--- Supabase Schema for Wage Lens (Raw Events)
+-- CashBFF Anonymous Analytics Schema
 -- Run this in the Supabase SQL Editor
+-- No PII, no URLs, no exact prices — just anonymous usage events
 
--- Create the events table (raw, minimal interpretation)
-CREATE TABLE events (
+-- Drop old table if migrating
+-- DROP TABLE IF EXISTS events;
+
+CREATE TABLE anon_events (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  user_id TEXT NOT NULL,
-  timestamp TIMESTAMPTZ DEFAULT NOW(),
-  timezone TEXT,
-  
-  -- Raw page data
-  url TEXT NOT NULL,
-  page_title TEXT,
-  
-  -- Price we found (null if none detected)
-  scraped_price DECIMAL(10,2),
-  
-  -- Flexible storage for anything else
-  metadata JSONB DEFAULT '{}'::jsonb
+  anon_id TEXT NOT NULL,
+  event TEXT NOT NULL,
+  payload JSONB DEFAULT '{}',
+  created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Indexes for common queries
-CREATE INDEX idx_events_user_id ON events(user_id);
-CREATE INDEX idx_events_timestamp ON events(timestamp);
-CREATE INDEX idx_events_url ON events(url);
+-- Indexes
+CREATE INDEX idx_anon_events_anon_id ON anon_events(anon_id);
+CREATE INDEX idx_anon_events_event ON anon_events(event);
+CREATE INDEX idx_anon_events_created_at ON anon_events(created_at);
+CREATE INDEX idx_anon_events_payload ON anon_events USING GIN (payload);
 
--- GIN index for fast JSONB queries
-CREATE INDEX idx_events_metadata ON events USING GIN (metadata);
+-- Row Level Security
+ALTER TABLE anon_events ENABLE ROW LEVEL SECURITY;
 
--- Enable Row Level Security
-ALTER TABLE events ENABLE ROW LEVEL SECURITY;
+-- Anon key can only INSERT (no reads, no updates, no deletes)
+CREATE POLICY "Allow anonymous inserts" ON anon_events
+  FOR INSERT WITH CHECK (true);
 
--- Allow inserts from anon key
-CREATE POLICY "Allow anonymous inserts" ON events
-  FOR INSERT
-  WITH CHECK (true);
-
--- Allow reads (for future dashboard)
-CREATE POLICY "Allow reads" ON events
-  FOR SELECT
-  USING (true);
+-- Only service_role can read (for your dashboard queries)
+CREATE POLICY "Service role reads" ON anon_events
+  FOR SELECT USING (auth.role() = 'service_role');
 
 
 -- ============================================
--- USEFUL QUERIES (run these later for analysis)
+-- USEFUL QUERIES (run with service_role key)
 -- ============================================
 
--- All events for a user
--- SELECT * FROM events WHERE user_id = 'xxx' ORDER BY timestamp DESC;
+-- Daily active users
+-- SELECT DATE(created_at) as day, COUNT(DISTINCT anon_id)
+-- FROM anon_events WHERE event = 'daily_active'
+-- GROUP BY day ORDER BY day DESC;
 
--- Detect product pages (you define the logic, not the schema)
--- SELECT * FROM events WHERE url LIKE '%/dp/%' OR url LIKE '%/gp/product/%';
+-- Installs over time
+-- SELECT DATE(created_at) as day, COUNT(*)
+-- FROM anon_events WHERE event = 'install'
+-- GROUP BY day ORDER BY day DESC;
 
--- Browsing by hour of day
--- SELECT 
---   EXTRACT(HOUR FROM timestamp AT TIME ZONE timezone) as local_hour,
---   COUNT(*) 
--- FROM events 
--- GROUP BY local_hour 
--- ORDER BY local_hour;
+-- Which domains are most used
+-- SELECT payload->>'domain' as domain, COUNT(*)
+-- FROM anon_events WHERE event = 'page_converted'
+-- GROUP BY domain ORDER BY count DESC;
 
--- Total value browsed (only where we found a price)
--- SELECT user_id, SUM(scraped_price) as total_browsed
--- FROM events 
--- WHERE scraped_price IS NOT NULL
--- GROUP BY user_id;
+-- Price bucket distribution
+-- SELECT payload->>'bucket' as bucket, COUNT(*)
+-- FROM anon_events WHERE event = 'price_bucket'
+-- GROUP BY bucket ORDER BY count DESC;
 
--- Extract ASIN from metadata
--- SELECT metadata->>'asin' as asin, COUNT(*)
--- FROM events
--- WHERE metadata->>'asin' IS NOT NULL
--- GROUP BY asin
--- ORDER BY count DESC;
+-- Time of day usage
+-- SELECT payload->>'period' as period, COUNT(*)
+-- FROM anon_events WHERE event = 'time_of_day'
+-- GROUP BY period ORDER BY count DESC;
 
--- Find repeat views of same product
--- SELECT url, COUNT(*) as views, MIN(timestamp) as first_view, MAX(timestamp) as last_view
--- FROM events
--- WHERE url LIKE '%/dp/%'
--- GROUP BY url
--- HAVING COUNT(*) > 1;
+-- Average prices converted per page
+-- SELECT AVG((payload->>'price_count')::int) as avg_prices
+-- FROM anon_events WHERE event = 'page_converted';
 
--- Late night browsing (11pm - 3am local time)
--- SELECT *
--- FROM events
--- WHERE EXTRACT(HOUR FROM timestamp AT TIME ZONE timezone) IN (23, 0, 1, 2, 3);
+-- Onboarding completion (wage_set vs install)
+-- SELECT event, COUNT(DISTINCT anon_id)
+-- FROM anon_events WHERE event IN ('install', 'wage_set')
+-- GROUP BY event;

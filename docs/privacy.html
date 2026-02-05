@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CashBFF - Privacy Policy</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    h1 { font-size: 24px; margin-bottom: 8px; }
+    .updated { font-size: 13px; color: #888; margin-bottom: 32px; }
+    h2 { font-size: 18px; margin-top: 28px; margin-bottom: 8px; }
+    p, ul { margin-bottom: 12px; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 4px; }
+    .highlight { background: #f0f9f0; border-left: 3px solid #34C759; padding: 12px 16px; border-radius: 4px; margin: 16px 0; }
+    a { color: #007AFF; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; font-size: 13px; color: #888; }
+  </style>
+</head>
+<body>
+  <h1>CashBFF Privacy Policy</h1>
+  <p class="updated">Last updated: February 4, 2026</p>
+
+  <div class="highlight">
+    <strong>The short version:</strong> CashBFF collects minimal, anonymous usage data to improve the extension. We never collect your browsing history, personal information, or the actual prices you see. You can opt out at any time.
+  </div>
+
+  <h2>What CashBFF Does</h2>
+  <p>CashBFF is a browser extension that converts dollar prices on shopping websites into "hours of work" based on an hourly wage you provide. All price conversion happens locally in your browser.</p>
+
+  <h2>Data Stored on Your Device</h2>
+  <p>The following data is stored locally on your device using Chrome's built-in storage and never sent to any server:</p>
+  <ul>
+    <li>Your hourly wage setting</li>
+    <li>Your analytics opt-in/opt-out preference</li>
+    <li>A randomly generated anonymous identifier</li>
+  </ul>
+
+  <h2>Anonymous Analytics Data We Collect</h2>
+  <p>If you have analytics enabled (the default), we collect the following anonymous data to understand how the extension is used and to improve it:</p>
+  <ul>
+    <li><strong>Install event</strong> — that the extension was installed, plus the version number</li>
+    <li><strong>Daily active signal</strong> — that the extension was active on a given day</li>
+    <li><strong>Wage set signal</strong> — that a wage was saved (not the value, just whether it was changed from the default)</li>
+    <li><strong>Page conversion counts</strong> — the website domain (e.g. "amazon.com") and how many prices were converted on that page</li>
+    <li><strong>Price range buckets</strong> — which general price ranges were seen (e.g. "$0-10", "$10-50", "$50-200", "$200+"), not exact prices</li>
+    <li><strong>Time-of-day period</strong> — the general time period of usage (morning, afternoon, evening, night), not the exact time</li>
+    <li><strong>Price hover</strong> — that a converted price was hovered over, plus the domain</li>
+  </ul>
+
+  <h2>Data We Do NOT Collect</h2>
+  <ul>
+    <li>Your name, email, or any personal information</li>
+    <li>Your hourly wage value</li>
+    <li>Exact prices of products you view</li>
+    <li>Product names, titles, or descriptions</li>
+    <li>Full page URLs or browsing history</li>
+    <li>Any data that could identify you personally</li>
+  </ul>
+
+  <h2>Anonymous Identifier</h2>
+  <p>We generate a random UUID (universally unique identifier) stored locally on your device. This allows us to count unique users without knowing who they are. This ID:</p>
+  <ul>
+    <li>Is randomly generated and not linked to any account or personal data</li>
+    <li>Cannot be used to identify you</li>
+    <li>Is stored only on your device</li>
+    <li>Is deleted if you uninstall the extension</li>
+  </ul>
+
+  <h2>How to Opt Out</h2>
+  <p>You can disable anonymous analytics at any time:</p>
+  <ol>
+    <li>Click the CashBFF extension icon in your browser toolbar</li>
+    <li>Toggle off "Anonymous analytics"</li>
+  </ol>
+  <p>When analytics are disabled, no data is sent from your browser. The extension continues to work normally.</p>
+
+  <h2>Where Data Is Stored</h2>
+  <p>Anonymous analytics data is stored in a Supabase database. Supabase provides secure, encrypted data storage. We use insert-only permissions for the anonymous key, meaning the extension can only add new events — it cannot read, modify, or delete any data.</p>
+
+  <h2>Third Parties</h2>
+  <p>We do not sell, share, or transfer your data to any third parties. Anonymous analytics data is used solely by the CashBFF team to improve the extension.</p>
+
+  <h2>Changes to This Policy</h2>
+  <p>If we make changes to this privacy policy, we will update the "Last updated" date at the top of this page. Significant changes will be communicated through the extension update notes.</p>
+
+  <h2>Contact</h2>
+  <p>If you have questions about this privacy policy, you can reach us at:</p>
+  <ul>
+    <li>GitHub: <a href="https://github.com/DakshBeep/CASHBFF_BROWSER/issues">github.com/DakshBeep/CASHBFF_BROWSER</a></li>
+  </ul>
+
+  <div class="footer">
+    CashBFF &middot; See prices in hours of your life
+  </div>
+</body>
+</html>

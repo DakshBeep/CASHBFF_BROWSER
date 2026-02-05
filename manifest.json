@@ -1,15 +1,16 @@
 {
   "manifest_version": 3,
-  "name": "Wage Lens",
-  "version": "0.1.0",
+  "name": "CashBFF",
+  "version": "0.2.0",
   "description": "See prices in hours of your life",
-  "permissions": ["storage", "activeTab"],
+  "permissions": ["storage", "alarms"],
   "host_permissions": ["<all_urls>"],
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "css": ["styles.css"]
+      "js": ["analytics.js", "content.js"],
+      "css": ["styles.css"],
+      "all_frames": true
     }
   ],
   "action": {

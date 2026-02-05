@@ -3,6 +3,36 @@
   cursor: help;
 }
 
+/* Ensure cart/checkout subtotals are also red */
+.sc-price[data-wage-lens-converted],
+h2.a-color-price[data-wage-lens-converted],
+span.a-text-bold[data-wage-lens-converted],
+span[class*="total-amount"][data-wage-lens-converted] {
+  color: #B12704 !important;
+}
+
+[data-wage-lens-converted]:hover::after,
 .wage-lens-converted:hover::after {
-  content: " 💰";
+  content: " (" attr(data-original-price) ")";
+  color: #888;
+  font-size: 0.85em;
+}
+
+/* Sephora: CSS-based price replacement to survive React re-renders */
+.sephora-price-converted {
+  font-size: 0 !important;
+  color: transparent !important;
+}
+
+.sephora-price-converted::before {
+  content: attr(data-converted-value);
+  font-size: 1rem !important;
+  color: #B12704 !important;
+  cursor: help;
+}
+
+.sephora-price-converted:hover::after {
+  content: " (" attr(data-original-price) ")";
+  font-size: 0.85rem !important;
+  color: #888 !important;
 }
