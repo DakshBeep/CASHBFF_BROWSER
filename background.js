@@ -19,24 +19,6 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     await analytics.track('install', { version });
     await analytics.flush();
   }
-
-  // Set up daily active alarm
-  chrome.alarms.create('dailyActive', { periodInMinutes: 1440 }); // 24 hours
-});
-
-// Daily active ping
-chrome.alarms.onAlarm.addListener(async (alarm) => {
-  if (alarm.name === 'dailyActive') {
-    const { lastActiveDate } = await chrome.storage.local.get({ lastActiveDate: null });
-    const today = new Date().toISOString().slice(0, 10);
-
-    if (lastActiveDate !== today) {
-      await chrome.storage.local.set({ lastActiveDate: today });
-      const version = chrome.runtime.getManifest().version;
-      await analytics.track('daily_active', { version });
-      await analytics.flush();
-    }
-  }
 });
 
 // Listen for wage_set messages from popup

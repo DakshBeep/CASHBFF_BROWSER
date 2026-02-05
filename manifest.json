@@ -3,7 +3,7 @@
   "name": "CashBFF",
   "version": "0.2.0",
   "description": "See prices in hours of your life",
-  "permissions": ["storage", "alarms"],
+  "permissions": ["storage"],
   "host_permissions": ["<all_urls>"],
   "content_scripts": [
     {
